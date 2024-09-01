@@ -12,6 +12,8 @@ from fastapi import (
     status,
 )
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+
 from files_api.s3.delete_objects import delete_s3_object
 from files_api.s3.read_objects import (
     fetch_s3_object,
@@ -20,7 +22,7 @@ from files_api.s3.read_objects import (
     object_exists_in_s3,
 )
 from files_api.s3.write_objects import upload_s3_object
-from pydantic import BaseModel
+from tests.consts import TEST_BUCKET_NAME
 
 #####################
 # --- Constants --- #
@@ -51,15 +53,23 @@ class FileMetadata(BaseModel):
 
 
 @APP.put("/files/{file_path:path}")
-async def upload_file(file_path: str, file: UploadFile, response: Response) -> ...:
+async def upload_file(file_path: str, file: UploadFile, response: Response):
     """Upload a file."""
-    ...
+
+    file_content: bytes = await file.read()
+
+    upload_s3_object(
+        bucket_name=TEST_BUCKET_NAME,
+        object_key=file_path,
+        data=file_content,
+        content_type=file.content_type,
+    )
 
 
 @APP.get("/files")
 async def list_files(
     query_params=...,
-) -> ...:
+):
     """List files with pagination."""
     ...
 
@@ -76,7 +86,7 @@ async def get_file_metadata(file_path: str, response: Response) -> Response:
 @APP.get("/files/{file_path:path}")
 async def get_file(
     file_path: str,
-) -> ...:
+):
     """Retrieve a file."""
     ...
 

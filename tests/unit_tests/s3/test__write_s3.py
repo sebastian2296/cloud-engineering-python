@@ -1,6 +1,6 @@
 import boto3
 
-from files_api.s3.write_s3 import write_s3
+from files_api.s3.write_objects import write_s3
 from tests.consts import TEST_BUCKET_NAME
 
 try:

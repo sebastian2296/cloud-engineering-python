@@ -4,6 +4,9 @@
 #
 # See run.sh for more in-depth comments on what each target does.
 
+run:
+	bash run.sh run
+	
 build:
 	bash run.sh build
 
